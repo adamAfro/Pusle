@@ -2,15 +2,14 @@
 <html lang="pl" dir="ltr">
 	<head>
 		<meta charset="utf-8">
+		<meta name="author" content="Adam Jakubczak">
 		<title>Pusle</title>
-
-		<link rel="stylesheet" href="src/style/pusle.css">
 	</head>
 	<body>
 
-		<main class="pusle">
+		<div class="pusle">
 
-		</main>
+		</div>
 
 		<div data-info="scripts">
 
@@ -19,7 +18,9 @@
 
 			<script type="text/javascript">
 
-				let pusle = new Pusle(document.querySelector("main.pusle"));
+				let pusle = new Pusle({
+					parent: document.querySelector(".pusle")
+				});
 
 			</script>
 

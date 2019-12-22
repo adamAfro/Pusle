@@ -1,15 +1,17 @@
 var Pusle = class {
-	constructor(containero) {
+	constructor(htmlAttr, {
+		imageUrl = "https://picsum.photos/256",
+		tileWidth = 3, width = 3, unit = "em",
+	} = {}) {
 
-		this.tileWidth = 3;
-		this.width = 3;
-		this.height = 3;
-		this.unit = "em";
+		this.tileWidth = tileWidth;
+		this.width = width;
+		this.unit = unit;
+		this.imageUrl = imageUrl;
 
-		this.gridatoinator = Snips.Noder.create("div", {
-			parent: containero,
-			classes: "grid"
-		});
+		this.gridatoinator = Snips.Noder.create("div", htmlAttr);
+
+		this.gridatoinator.style
 
 		this._makeTiles();
 
@@ -18,7 +20,7 @@ var Pusle = class {
 	}
 
 	get surface() {
-		return this.width * this.height;
+		return this.width ** 2;
 	}
 
 	moveTile(tile) {
@@ -99,7 +101,7 @@ var Pusle = class {
 			used.push(index);
 
 			this.tiles[index].style.left = (i % this.width) * this.tileWidth + this.unit
-			this.tiles[index].style.top = Math.floor(i / this.height) * this.tileWidth + this.unit;
+			this.tiles[index].style.top = Math.floor(i / this.width) * this.tileWidth + this.unit;
 		}
 	}
 
@@ -112,11 +114,24 @@ var Pusle = class {
 			this.tiles[i] = Snips.Noder.create("div", {
 				parent: this.gridatoinator,
 				classes: "tile",
+				styles: {
+					"position": 'absolute',
+					"width": this.tileWidth + this.unit,
+					"height": this.tileWidth + this.unit,
+					"background-image": "url(" + this.imageUrl + ")",
+					"background-size": this.surface + this.unit,
+					"background-position":
+						(i % this.width * this.tileWidth) + this.unit + " " +
+						(Math.floor(i / this.width) * this.tileWidth) + this.unit
+				}
 			});
 
 			this.tiles[i].addEventListener("click", () => this.moveTile(this.tiles[i]));
 		}
 
-		this.realestate = this.tiles[4].classList.add("realestate");
+		this.realestate = this.tiles[4]
+
+		this.realestate.classList.add("realestate");
+		this.realestate.style.background = "white";
 	}
 }
