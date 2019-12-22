@@ -23,33 +23,51 @@ var Pusle = class {
 
 	moveTile(tile) {
 
-		console.log(this.getNeighbours(tile));
+		let neighbours = this.getNeighbours(tile);
+
+		console.log(neighbours);
+
+		let neighbour = (neighbours.up && neighbours.up.classList.contains("realestate")) ? neighbours.up :
+			(neighbours.down && neighbours.down.classList.contains("realestate")) ? neighbours.down :
+			(neighbours.left && neighbours.left.classList.contains("realestate")) ? neighbours.left :
+			(neighbours.right && neighbours.right.classList.contains("realestate")) ? neighbours.right :
+			null;
+
+		console.log(neighbour);
+
+		if (neighbour) {
+
+			let top = neighbour.style.top, left = neighbour.style.left;
+
+			neighbour.style.top = tile.style.top;
+			neighbour.style.left = tile.style.left;
+
+			tile.style.top = top;
+			tile.style.left = left;
+		}
 	}
 
 	getNeighbours(tile) {
 
 		let neighbours = {};
 
-		for (let i = 0; i < this.tiles.length; i++) {
+		for (let target of this.tiles) {
 
-			let direction;
-			let isColumn, isRow, isAbove, isUnder, isLeft, isRight;
+			// TODO optymalizacja
 
-			isColumn = parseFloat(this.tiles[i].style.left) == parseFloat(tile.style.left);
+			let direction, isColumn, isRow, isAbove, isUnder, isLeft, isRight;
 
-			isRow = parseFloat(this.tiles[i].style.top) == parseFloat(tile.style.top);
+			isColumn = parseFloat(target.style.left) == parseFloat(tile.style.left);
 
-			isAbove = (parseFloat(this.tiles[i].style.top) + parseFloat(this.tileWidth)
-				== parseFloat(tile.style.top));
+			isRow = parseFloat(target.style.top) == parseFloat(tile.style.top);
 
-			isUnder = (parseFloat(this.tiles[i].style.top) - parseFloat(this.tileWidth)
-				== parseFloat(tile.style.top));
+			isAbove = (parseFloat(target.style.top) + this.tileWidth == parseFloat(tile.style.top));
 
-			isLeft = (parseFloat(this.tiles[i].style.left) + parseFloat(this.tileWidth)
-				== parseFloat(tile.style.left));
+			isUnder = (parseFloat(target.style.top) - this.tileWidth == parseFloat(tile.style.top));
 
-			isRight = (parseFloat(this.tiles[i].style.left) - parseFloat(this.tileWidth)
-				== parseFloat(tile.style.left));
+			isLeft = (parseFloat(target.style.left) + this.tileWidth == parseFloat(tile.style.left));
+
+			isRight = (parseFloat(target.style.left) - this.tileWidth == parseFloat(tile.style.left));
 
 			if (isAbove && isColumn)
 				direction = "up";
@@ -61,7 +79,7 @@ var Pusle = class {
 				direction = "right";
 
 			if (direction)
-				neighbours[direction] = this.tiles[i];
+				neighbours[direction] = target;
 		}
 
 		return neighbours;
