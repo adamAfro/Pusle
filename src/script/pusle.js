@@ -4,14 +4,21 @@ var Pusle = class {
 		tileWidth = 3, width = 3, unit = "em",
 	} = {}) {
 
-		this.tileWidth = tileWidth;
-		this.width = width;
-		this.unit = unit;
-		this.imageUrl = imageUrl;
+		this._tileWidth = tileWidth;
+		this._width = width;
+		this._unit = unit;
+		this._imageUrl = imageUrl;
 
-		this.gridatoinator = Snips.Noder.create("div", htmlAttr);
+		htmlAttr.styles = {
+			position: "relative",
+			width: width * tileWidth + unit,
+			height: width * tileWidth + unit
+		}
 
-		this.gridatoinator.style
+		this._gridatoinator = Snips.Noder.create("div", htmlAttr);
+
+		this._tiles = [];
+		this._realestate;
 
 		this._makeTiles();
 
@@ -20,22 +27,53 @@ var Pusle = class {
 	}
 
 	get surface() {
-		return this.width ** 2;
+		return this._width ** 2;
 	}
 
-	moveTile(tile) {
+	win() {
 
-		let neighbours = this.getNeighbours(tile);
+		this._tiles.forEach((tile) => {
 
-		console.log(neighbours);
+			let targetPosition = tile.style["background-position"].split(/(\s+)/);
+
+			tile.style.left = Math.abs(parseFloat(targetPosition[0])) + this._unit;
+			tile.style.top = Math.abs(parseFloat(targetPosition[2])) + this._unit; // [1] == "
+			// absolute bo inaczej tło nie działa
+		});
+	}
+
+	isWon() {
+
+		return this._tiles.every((tile) => {
+
+			let targetPosition = tile.style["background-position"].split(/(\s+)/);
+
+			targetPosition[0] = Math.abs(parseFloat(targetPosition[0]));
+			targetPosition[1] = Math.abs(parseFloat(targetPosition[2])); // [1] == "
+			// absolute bo inaczej tło nie działa
+			targetPosition.splice(2);
+
+			let position = [
+				parseFloat(tile.style.left),
+				parseFloat(tile.style.top)
+			];
+
+			if ((position[0] != targetPosition[0]) || (position[1] != targetPosition[1]))
+				return false;
+			else
+				return true;
+		});
+	}
+
+	_moveTile(tile) {
+
+		let neighbours = this._getNeighbours(tile);
 
 		let neighbour = (neighbours.up && neighbours.up.classList.contains("realestate")) ? neighbours.up :
 			(neighbours.down && neighbours.down.classList.contains("realestate")) ? neighbours.down :
 			(neighbours.left && neighbours.left.classList.contains("realestate")) ? neighbours.left :
 			(neighbours.right && neighbours.right.classList.contains("realestate")) ? neighbours.right :
 			null;
-
-		console.log(neighbour);
 
 		if (neighbour) {
 
@@ -49,11 +87,11 @@ var Pusle = class {
 		}
 	}
 
-	getNeighbours(tile) {
+	_getNeighbours(tile) {
 
 		let neighbours = {};
 
-		for (let target of this.tiles) {
+		for (let target of this._tiles) {
 
 			// TODO optymalizacja
 
@@ -63,13 +101,13 @@ var Pusle = class {
 
 			isRow = parseFloat(target.style.top) == parseFloat(tile.style.top);
 
-			isAbove = (parseFloat(target.style.top) + this.tileWidth == parseFloat(tile.style.top));
+			isAbove = (parseFloat(target.style.top) + this._tileWidth == parseFloat(tile.style.top));
 
-			isUnder = (parseFloat(target.style.top) - this.tileWidth == parseFloat(tile.style.top));
+			isUnder = (parseFloat(target.style.top) - this._tileWidth == parseFloat(tile.style.top));
 
-			isLeft = (parseFloat(target.style.left) + this.tileWidth == parseFloat(tile.style.left));
+			isLeft = (parseFloat(target.style.left) + this._tileWidth == parseFloat(tile.style.left));
 
-			isRight = (parseFloat(target.style.left) - this.tileWidth == parseFloat(tile.style.left));
+			isRight = (parseFloat(target.style.left) - this._tileWidth == parseFloat(tile.style.left));
 
 			if (isAbove && isColumn)
 				direction = "up";
@@ -100,38 +138,41 @@ var Pusle = class {
 
 			used.push(index);
 
-			this.tiles[index].style.left = (i % this.width) * this.tileWidth + this.unit
-			this.tiles[index].style.top = Math.floor(i / this.width) * this.tileWidth + this.unit;
+			this._tiles[index].style.left = (i % this._width) * this._tileWidth + this._unit
+			this._tiles[index].style.top = Math.floor(i / this._width) * this._tileWidth + this._unit;
 		}
 	}
 
 	_makeTiles() {
 
-		this.tiles = [];
-
 		for (let i = 0; i < this.surface; i++) {
 
-			this.tiles[i] = Snips.Noder.create("div", {
-				parent: this.gridatoinator,
+			this._tiles[i] = Snips.Noder.create("div", {
+				parent: this._gridatoinator,
 				classes: "tile",
+				text: i,
 				styles: {
 					"position": 'absolute',
-					"width": this.tileWidth + this.unit,
-					"height": this.tileWidth + this.unit,
-					"background-image": "url(" + this.imageUrl + ")",
-					"background-size": this.surface + this.unit,
-					"background-position":
-						(i % this.width * this.tileWidth) + this.unit + " " +
-						(Math.floor(i / this.width) * this.tileWidth) + this.unit
+					"width": this._tileWidth + this._unit,
+					"height": this._tileWidth + this._unit,
+					"background-image": "url(" + this._imageUrl + ")",
+					"background-size": this._width * this._tileWidth + this._unit,
+					"background-position": this._makeBackgroundPosition(i)
 				}
 			});
 
-			this.tiles[i].addEventListener("click", () => this.moveTile(this.tiles[i]));
+			this._tiles[i].addEventListener("click", () => this._moveTile(this._tiles[i]));
 		}
 
-		this.realestate = this.tiles[4]
+		this._realestate = this._tiles[0]
 
-		this.realestate.classList.add("realestate");
-		this.realestate.style.background = "white";
+		this._realestate.classList.add("realestate");
+		this._realestate.style["background-image"] = "none";
+	}
+
+	_makeBackgroundPosition(i) {
+		return "-" + (i % this._width * this._tileWidth) + this._unit + " -" +
+		(Math.floor(i / this._width) * this._tileWidth) + this._unit
+		// minus bo inaczej tło nie działa
 	}
 }
