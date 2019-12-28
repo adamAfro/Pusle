@@ -10,9 +10,10 @@ var Pusle = class {
 		this._imageUrl = imageUrl;
 
 		htmlAttr.styles = {
-			position: "relative",
-			width: width * tileWidth + unit,
-			height: width * tileWidth + unit
+			"position": "relative",
+			"width": width * tileWidth + unit,
+			"height": width * tileWidth + unit,
+			"background-size": this._width * this._tileWidth + this._unit,
 		}
 
 		this._gridatoinator = Snips.Noder.create("div", htmlAttr);
@@ -24,13 +25,51 @@ var Pusle = class {
 
 		this._randomise();
 
+		this.isWorking = false;
 	}
+
+	// turn() {
+	//
+	// 	this.turnOff() || this.turnOn();
+	// }
+
+	turnOn() {
+
+		if (!this.isWorking) {
+
+			for (let i = 0; i < this.surface; i++)
+				this._tiles[i]
+					.addEventListener("click", () => this._moveTile(this._tiles[i]));
+
+			this.isWorking = true;
+
+			return true;
+		} else
+			return false;
+	}
+
+	// turnOff() {
+	//
+	// 	if (this.isWorking) {
+	//
+	// 		for (let i = 0; i < this.surface; i++)
+	// 			this._tiles[i]
+	// 				.removeEventListener("click", () => this._moveTile(this._tiles[i]));
+	//
+	// 		this.isWorking = false;
+	//
+	// 		return true;
+	// 	} else
+	// 		return false
+	// }
 
 	get surface() {
 		return this._width ** 2;
 	}
 
-	win() {
+	makeWin() {
+
+		console.log("OSZUST");
 
 		this._tiles.forEach((tile) => {
 
@@ -65,6 +104,16 @@ var Pusle = class {
 		});
 	}
 
+	win() {
+
+		// this.turnOff();
+
+		this._tiles.forEach(tile => tile.remove());
+		this._tiles = [];
+
+		this._gridatoinator.style["background-image"] = "url(" + this._imageUrl + ")";
+	}
+
 	_moveTile(tile) {
 
 		let neighbours = this._getNeighbours(tile);
@@ -84,6 +133,9 @@ var Pusle = class {
 
 			tile.style.top = top;
 			tile.style.left = left;
+
+			if (this.isWon())
+				this.win();
 		}
 	}
 
@@ -161,7 +213,7 @@ var Pusle = class {
 				}
 			});
 
-			this._tiles[i].addEventListener("click", () => this._moveTile(this._tiles[i]));
+			//this._tiles[i].addEventListener("click", () => this._moveTile(this._tiles[i]));
 		}
 
 		this._realestate = this._tiles[0]
