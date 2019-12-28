@@ -1,4 +1,13 @@
-var Pusle = class {
+/**
+ * @namespace
+ */
+var Pusle = {}
+
+Pusle.events = {
+	win: new CustomEvent("puslewon"),
+};
+
+Pusle.Game = class {
 	constructor(htmlAttr, {
 		imageUrl = "https://picsum.photos/256",
 		tileWidth = 3, width = 3, unit = "em",
@@ -112,6 +121,8 @@ var Pusle = class {
 		this._tiles = [];
 
 		this._gridatoinator.style["background-image"] = "url(" + this._imageUrl + ")";
+
+		this._gridatoinator.parentNode.dispatchEvent(Pusle.events.win);
 	}
 
 	_moveTile(tile) {

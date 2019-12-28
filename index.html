@@ -18,9 +18,13 @@
 
 			<script type="text/javascript">
 
-				let pusle = new Pusle({
-					parent: document.querySelector(".pusle")
+				let container = document.querySelector(".pusle");
+
+				let pusle = new Pusle.Game({
+					parent: container
 				});
+
+				pusle.turnOn();
 
 			</script>
 
