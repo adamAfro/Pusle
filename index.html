@@ -4,17 +4,152 @@
 		<meta charset="utf-8">
 		<meta name="author" content="Adam Jakubczak">
 		<title>Pusle</title>
+
+		<link rel="stylesheet" href="src/layout.css">
 	</head>
-	<body>
+	<body class="website">
 
-		<div class="pusle">
+		<header class="header">
 
-		</div>
+			<h1 class="heading">
+				Pusle
+			</h1>
+
+		</header>
+
+		<main class="content">
+
+			<p class="info">
+				Proste puzzle typu: kilknij, żeby przesunąć w puste miejsce.
+				Po poprawnym ułożeniu wywoływany jest event
+				<code>puslewon</code>
+			</p>
+
+			<div class="showcase">
+
+				<div class="presentation">
+
+					<div class="pusle">
+
+					</div>
+
+					<div class="buttons">
+
+					</div>
+
+				</div>
+
+				<section class="about">
+
+					<h2 class="heading">
+						Umieszczanie na stronie:
+					</h2>
+
+					<ol>
+
+						<li>
+							<h3>
+								Pobierz
+							</h3>
+
+							<p>
+								<a href="https://github.com/adamAfro/Pusle/releases">
+									https://github.com/adamAfro/Pusle/releases
+								</a>
+							</p>
+						</li>
+
+						<li>
+							<h3>
+								Umieść
+							</h3>
+
+							<p class="code">
+
+								<code>
+									&lt;script src="sciezka/do/pusle-snipped.js"&gt;&lt;/script&gt;
+								</code>
+
+							</p>
+						</li>
+
+						<li>
+							<h3>
+								Wkoduj
+							</h3>
+
+							<p class="code">
+
+								<code>
+									let pusle = new Pusle.Game({<br>
+
+										<span class="tab">(str) id,</span>
+										<span class="comment">//id jakie ma mieć plansza</span><br>
+
+										<span class="tab">(str) classes,</span>
+										<span class="comment">//klasy planszy</span><br>
+
+										<span class="tab">(obj) styles,</span>
+										<span class="comment">//styl css planszy</span><br>
+
+										<span class="tab">(str) html|text,</span>
+										<span class="comment">//tekst lub html wewnątrz planszy - nie używać</span><br>
+
+										<span class="tab">(HTMLElement) previous|parent,</span>
+										<span class="comment">//element-rodzic lub element poprzedzający</span><br>
+
+									}, {<br>
+
+										<span class="tab">(str) imageUrl,</span>
+										<span class="comment">//ścieżka lub adres do obrazka</span><br>
+
+										<span class="tab">(num) tileWidth,</span>
+										<span class="comment">//szerokość płytki w jednostkach miary</span><br>
+
+										<span class="tab">(num) width,</span>
+										<span class="comment">//szerokość planszy w płytkach</span><br>
+
+										<span class="tab">(str) unit,</span>
+										<span class="comment">//jednostka miary</span><br>
+
+									});<br>
+									<br>
+									pusle.turnOn();<br>
+								</code>
+
+							</p>
+
+							<p class="info">
+								Wszystkie argumenty są opcjonalne, ale bez rodzica lub elementu poprzedzającego nie zobaczysz pusli na stronie
+							</p>
+
+						</li>
+
+					</ol>
+
+				</section>
+
+			</div>
+
+		</main>
+
+		<footer class="footer">
+
+			<p>
+				Adam Jakubczak
+			</p>
+
+			<p>
+				<a href="https://github.com/adamAfro">
+					https://github.com/adamAfro
+				</a>
+			</p>
+
+		</footer>
 
 		<div data-info="scripts">
 
-			<script src="src/script/snips.js"></script>
-			<script src="src/script/pusle.js"></script>
+			<script src="src/pusle-snipped.js"></script>
 
 			<script type="text/javascript">
 
@@ -22,9 +157,33 @@
 
 				let pusle = new Pusle.Game({
 					parent: container
+				}, {
+					tileWidth: 5
 				});
 
 				pusle.turnOn();
+
+			</script>
+
+			<script type="text/javascript">
+
+				let buttons = document.querySelector(".presentation > .buttons");
+
+				Snips.Noder.createInput({
+					classes: "button",
+					text: "pusle.win()",
+					parent: buttons
+				}, {
+					isButton: true
+				}).addEventListener("click", () => pusle.win());
+
+				Snips.Noder.createInput({
+					classes: "button",
+					text: "pusle.makeWin()",
+					parent: buttons
+				}, {
+					isButton: true
+				}).addEventListener("click", () => pusle.makeWin());
 
 			</script>
 

@@ -1,0 +1,73 @@
+.website, .header, .content, .footer {
+	margin: 0;
+	overflow: auto;
+}
+
+.header {
+	background-color: white;
+	color: #800000;
+}
+
+.header > .heading {
+	text-align: center;
+}
+
+.content {
+	background-color: #999;
+	background-image: linear-gradient(#fff, #999);
+}
+
+	.content > .info {
+		max-width: 60em;
+		padding: 1em;
+		margin: auto;
+	}
+
+.showcase {
+	display: flex;
+	flex-flow: wrap;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.pusle {
+	padding: 1em;
+}
+
+.about {
+	width: 40em;
+	padding: 1em;
+}
+
+.code {
+	padding: 1em;
+	background-color: #bbb;
+}
+
+.code .tab {
+	padding-left: 2em;
+}
+
+.code .comment {
+	opacity: 0.5
+}
+
+.footer {
+	background-color: black;
+	color: white;
+	text-align: center;
+}
+
+.buttons {
+	
+}
+
+.buttons > .button {
+	display: block;
+	padding-left: 1em;
+	margin: 1em;
+	background: 0;
+	border: 0;
+	text-decoration: underline;
+	cursor: pointer;
+}

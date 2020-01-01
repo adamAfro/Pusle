@@ -1,6 +1,121 @@
 /**
  * @namespace
  */
+var Snips = {};
+
+Snips.Noder = class {
+
+	static create(tag = "div", {
+
+		id = null,
+
+		classes = "",
+		styles = {},
+
+		html = null,
+		text = null,
+
+		previous = null,
+		parent = null,
+	} = {}) {
+
+		let element = document.createElement(tag);
+
+		if (previous)
+			previous.parentElement.insertBefore(element, previous.nextSibling);
+		else if (parent)
+			parent.appendChild(element);
+
+		if (id)
+			element.id = id;
+
+		if (classes) {
+
+			classes = classes.split(" ");
+			for (let key in classes)
+			element.classList.add(classes[key]);
+		}
+
+		for (let key in styles)
+			element.style[key] = styles[key];
+
+		if (html)
+			element.innerHTML = html;
+		else if (text)
+			element.innerText = text;
+
+		return element;
+	}
+
+	static createAnchor(htmlAttr, {
+		href = "#"
+	} = {}) {
+
+		let element = this.create("a", htmlAttr);
+
+		element.href = href;
+
+		return element;
+	}
+
+	static createInput(htmlAttr, {
+		type = "text",
+
+		disabled = false,
+		value = null,
+		placeholder = null,
+
+		isButton = false,
+
+		scalable = 0,
+	} = {}) {
+
+		let tag;
+
+		if (isButton) {
+
+			tag = "button";
+		} else {
+
+			tag = "input";
+
+			htmlAttr.html = null;
+			htmlAttr.text = null;
+		}
+
+		let element = this.create(tag, htmlAttr);
+
+		element.type = type;
+
+		if (disabled)
+			element.disabled = true;
+
+		if (value)
+			element.value = value;
+
+		if (placeholder)
+			element.placeholder = placeholder;
+
+		if (scalable) {
+
+			this.scaleInput(element, scalable);
+
+			element.addEventListener("input", () => this.scaleInput(element, scalable));
+		}
+
+		return element;
+	}
+
+	static scaleInput(input, min = 5) {
+
+		input.size = (input.value.length >= min) ? input.value.length : min;
+	}
+
+}
+
+/**
+ * @namespace
+ */
 var Pusle = {}
 
 Pusle.events = {
@@ -8,6 +123,7 @@ Pusle.events = {
 };
 
 Pusle.Game = class {
+
 	constructor(htmlAttr, {
 		imageUrl = "https://picsum.photos/256",
 		tileWidth = 3, width = 3, unit = "em",
@@ -46,7 +162,7 @@ Pusle.Game = class {
 
 		if (!this.isWorking) {
 
-			for (let i = 0; i < this.surface; i++)
+			for (let i = 0; i < this._surface; i++)
 				this._tiles[i]
 					.addEventListener("click", () => this._moveTile(this._tiles[i]));
 
@@ -61,7 +177,7 @@ Pusle.Game = class {
 	//
 	// 	if (this.isWorking) {
 	//
-	// 		for (let i = 0; i < this.surface; i++)
+	// 		for (let i = 0; i < this._surface; i++)
 	// 			this._tiles[i]
 	// 				.removeEventListener("click", () => this._moveTile(this._tiles[i]));
 	//
@@ -72,7 +188,7 @@ Pusle.Game = class {
 	// 		return false
 	// }
 
-	get surface() {
+	get _surface() {
 		return this._width ** 2;
 	}
 
@@ -90,7 +206,7 @@ Pusle.Game = class {
 		});
 	}
 
-	isWon() {
+	_isWon() {
 
 		return this._tiles.every((tile) => {
 
@@ -145,7 +261,7 @@ Pusle.Game = class {
 			tile.style.top = top;
 			tile.style.left = left;
 
-			if (this.isWon())
+			if (this._isWon())
 				this.win();
 		}
 	}
@@ -192,12 +308,12 @@ Pusle.Game = class {
 
 		let used = [];
 
-		for (var i = 0; i < this.surface; i++) {
+		for (var i = 0; i < this._surface; i++) {
 
 			let index = 0;
 
 			while (used.includes(index))
-				index = Math.floor(Math.random() * this.surface);
+				index = Math.floor(Math.random() * this._surface);
 
 			used.push(index);
 
@@ -208,12 +324,11 @@ Pusle.Game = class {
 
 	_makeTiles() {
 
-		for (let i = 0; i < this.surface; i++) {
+		for (let i = 0; i < this._surface; i++) {
 
 			this._tiles[i] = Snips.Noder.create("div", {
 				parent: this._gridatoinator,
 				classes: "tile",
-				text: i,
 				styles: {
 					"position": 'absolute',
 					"width": this._tileWidth + this._unit,
@@ -223,11 +338,9 @@ Pusle.Game = class {
 					"background-position": this._makeBackgroundPosition(i)
 				}
 			});
-
-			//this._tiles[i].addEventListener("click", () => this._moveTile(this._tiles[i]));
 		}
 
-		this._realestate = this._tiles[0]
+		this._realestate = this._tiles[0];
 
 		this._realestate.classList.add("realestate");
 		this._realestate.style["background-image"] = "none";
